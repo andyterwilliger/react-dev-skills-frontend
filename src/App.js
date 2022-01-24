@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./styles.css";
 
 export default function App() {
+  const URL = 'http://localhost:3001/api/skills';
+  //eventually Heroku url will go here
   const [state, setState] = useState({
-    skills: [{ skill: "JavaScript", level: "4" }],
+    skills: [],
     newSkill: {
       skill: "",
       level: "3"
     }
   });
+
+  async function getSkills() {
+      const response = await fetch(URL);
+      const data = await response.json();
+      setState((prevState) => ({
+        ...prevState,
+        skills: data
+  }))
+  }
+
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -29,7 +41,11 @@ export default function App() {
       };
     });
   }
-
+  
+  useEffect(() =>{
+    getSkills();
+  }, [])
+  
   return (
     <section>
       <h2>DEV SKILLS</h2>
